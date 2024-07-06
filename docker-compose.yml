@@ -4,7 +4,7 @@ services:
   app:
     container_name: srcbot
     build: .
-    command: command: >
+    command: >
       echo "Starting Bot" && flask run -h 0.0.0.0 -p 10000 & python3 -m main
     environment:
       API_ID: # Your API HASH from my.telegram.org
