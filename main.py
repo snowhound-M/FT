@@ -52,7 +52,6 @@ except Exception as e:
 
 S = '/' + 's' + 't' + 'a' + 'r' + 't'
 B = '/' + 'b' + 'a' + 't' + 'c' + 'h'
-GL = []
 batch = []
 fs = FORCESUB
 ft = f"To use this bot you've to join @{fs}."
@@ -133,22 +132,14 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
             if msg.media:
                 if msg.media==MessageMediaType.WEB_PAGE:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
                     await edit.delete()
-                    await client.send_message("TeamDrom", m_text)
-                    await client.send_message("TeamDrom", GL[1])
                     await client.send_message(sender, msg.text.markdown)
-                    GL.clear()
                     return
             if not msg.media:
                 if msg.text:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
                     await edit.delete()
-                    await client.send_message("TeamDrom", m_text)
-                    await client.send_message("TeamDrom", GL[1])
                     await client.send_message(sender, msg.text.markdown)
-                    GL.clear()
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
             file = await userbot.download_media(
@@ -194,11 +185,10 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                     thumb_path = await screenshot(file, duration, sender)
                 except Exception:
                     thumb_path = None
-                    print(f"Thumb path is: {thumb_path}")
-                M = await client.send_video(
-                    chat_id="TeamDrom",
+                await client.send_video(
+                    chat_id=sender,
                     video=file,
-                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\n",
+                    caption=caption,
                     supports_streaming=True,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
@@ -210,30 +200,15 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-                await client.send_message("TeamDrom", f"`Bot Received :` {GL[1]}")
-                f_id = M.video.file_id
-                await client.send_video(
-                    chat_id=sender,
-                    video=f_id,
-                    caption=caption,
-                    supports_streaming=True
-                )
             elif msg.media==MessageMediaType.PHOTO:
                 await edit.edit("Uploading photo.")
-                M = await client.send_photo(chat_id="TeamDrom", photo=file, caption=caption)
-                await client.send_message("TeamDrom", f"`Bot Received :` {GL[1]}")
-                f_id = M.photo.file_id
-                await client.send_photo(
-                    chat_id=sender,
-                    photo=f_id,
-                    caption=caption
-                )
+                await client.send_photo(chat_id=sender, photo=file, caption=caption)
             else:
                 thumb_path=thumbnail(sender)
-                M = await client.send_document(
-                    "TeamDrom",
+                await client.send_document(
+                    sender,
                     file, 
-                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\n",
+                    caption=caption,
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
@@ -242,13 +217,6 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                         edit,
                         time.time()
                     )
-                )
-                await client.send_message("TeamDrom", f"`Bot Received :` {GL[1]}")
-                f_id = M.document.file_id
-                await client.send_document(
-                    chat_id=sender,
-                    document=f_id,
-                    caption=caption
                 )
             try:
                 os.remove(file)
@@ -272,7 +240,6 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                 os.remove(file)
         except Exception:
             pass
-        GL.clear()
         await edit.delete()
     else:
         edit = await client.edit_message_text(sender, edit_id, "Cloning.")
@@ -283,16 +250,11 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
         else:
             var = False  # 'sender' is not a string
         if msg.caption:
-            mo_text = f"{msg.caption.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
-            mt_text = f"{msg.caption.markdown}"
-            M = await client.copy_message("TeamDrom", chat, msg_id, mo_text)
+            mt_text = msg.caption.markdown
+            await client.copy_message(sender, chat, msg_id, mt_text)
         else:
-            mo_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
-            mt_text = f"{msg.text.markdown}"
-            M = await client.send_message("TeamDrom", mo_text)
-        await client.send_message("TeamDrom", f"`Bot Received :` {GL[1]}")
-        await client.send_message(sender, mt_text)
-        GL.clear()
+            mt_text = msg.text.markdown
+            await client.send_message(sender, mt_text)
         await edit.delete()
         
 async def get_bulk_msg(userbot, client, sender, msg_link, i):
@@ -486,23 +448,10 @@ async def _batch(pbot, cmd):
             batch.append(cmd.from_user.id)
             await run_batch(userbot, pbot, cmd.from_user.id, _link, value)
             conv.cancel()
-            if GL:
-                GL.clear()
             batch.clear()
 
 @PBot.on_message(filters.incoming & filters.private & ~filters.photo)
 async def clone(pbot, cmd):
-    dt = cmd.date
-    dt_str_time = dt.strftime("%H:%M:%S")
-    dt_str_date = dt.strftime("%A, %B %d, %Y")
-    await pbot.send_message("DromBots", f"`NEW BOT LOGS`")
-    text = f"**BOT MSG ID :** {cmd.id}\n**Time :** `{dt_str_time}`\n**Bot Received :** `Attached Below`"
-    await pbot.send_message("DromBots", text)
-    T = await pbot.send_message("DromBots", f"{cmd.text.markdown}")
-    if not GL:
-        GL.extend([T, f"https://t.me/c/1758401323/{T.id}", dt_str_time, dt_str_date])
-    else:
-        pass
     if cmd.reply_to_message:
         reply = cmd.reply_to_message
         if reply.text in ["Send me the message link you want to start saving from, as a reply to this message.", "Send me the number of files/range you want to save from the given message, as a reply to this message."]:
