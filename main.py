@@ -218,13 +218,13 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                         time.time()
                     )
                 )
-            try:
-                os.remove(file)
-                if os.path.isfile(file) == True:
-                    os.remove(file)
-            except Exception:
-                pass
-            await edit.delete()
+            # try:
+            # os.remove(file)
+            # if os.path.isfile(file) == True:
+            # os.remove(file)
+            # except Exception:
+            # pass
+            # await edit.delete()
         except (ChannelBanned, ChannelInvalid, ChannelPrivate, ChatIdInvalid, ChatInvalid):
             await client.edit_message_text(sender, edit_id, "Have you joined the channel?\nSend me the invite link first.")
             return
