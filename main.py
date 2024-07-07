@@ -52,7 +52,6 @@ except Exception as e:
 
 S = '/' + 's' + 't' + 'a' + 'r' + 't'
 B = '/' + 'b' + 'a' + 't' + 'c' + 'h'
-UI = []
 GL = []
 batch = []
 fs = FORCESUB
@@ -134,23 +133,21 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
             if msg.media:
                 if msg.media==MessageMediaType.WEB_PAGE:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**"
+                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
                     await edit.delete()
                     await client.send_message("TeamDrom", m_text)
                     await client.send_message("TeamDrom", GL[1])
                     await client.send_message(sender, msg.text.markdown)
-                    UI.clear()
                     GL.clear()
                     return
             if not msg.media:
                 if msg.text:
                     edit = await client.edit_message_text(sender, edit_id, "Cloning.")
-                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**"
+                    m_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
                     await edit.delete()
                     await client.send_message("TeamDrom", m_text)
                     await client.send_message("TeamDrom", GL[1])
                     await client.send_message(sender, msg.text.markdown)
-                    UI.clear()
                     GL.clear()
                     return
             edit = await client.edit_message_text(sender, edit_id, "Trying to Download.")
@@ -201,7 +198,7 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                 M = await client.send_video(
                     chat_id="TeamDrom",
                     video=file,
-                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**",
+                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\n",
                     supports_streaming=True,
                     height=height, width=width, duration=duration, 
                     thumb=thumb_path,
@@ -236,7 +233,7 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                 M = await client.send_document(
                     "TeamDrom",
                     file, 
-                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**",
+                    caption=f"{caption}\n\n\n{GL[3]}\n{GL[2]}\n\n",
                     thumb=thumb_path,
                     progress=progress_for_pyrogram,
                     progress_args=(
@@ -275,7 +272,6 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
                 os.remove(file)
         except Exception:
             pass
-        UI.clear()
         GL.clear()
         await edit.delete()
     else:
@@ -287,16 +283,15 @@ async def get_msg(userbot, client, tdrone, sender, edit_id, msg_link, i):
         else:
             var = False  # 'sender' is not a string
         if msg.caption:
-            mo_text = f"{msg.caption.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**"
+            mo_text = f"{msg.caption.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
             mt_text = f"{msg.caption.markdown}"
             M = await client.copy_message("TeamDrom", chat, msg_id, mo_text)
         else:
-            mo_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\nBy **{UI[0]}**"
+            mo_text = f"{msg.text.markdown}\n\n\n{GL[3]}\n{GL[2]}\n\n"
             mt_text = f"{msg.text.markdown}"
             M = await client.send_message("TeamDrom", mo_text)
         await client.send_message("TeamDrom", f"`Bot Received :` {GL[1]}")
         await client.send_message(sender, mt_text)
-        UI.clear()
         GL.clear()
         await edit.delete()
         
@@ -491,23 +486,17 @@ async def _batch(pbot, cmd):
             batch.append(cmd.from_user.id)
             await run_batch(userbot, pbot, cmd.from_user.id, _link, value)
             conv.cancel()
-            if UI:
-                UI.clear()
             if GL:
                 GL.clear()
             batch.clear()
 
 @PBot.on_message(filters.incoming & filters.private & ~filters.photo)
 async def clone(pbot, cmd):
-    if not UI:
-        UI.append(cmd.from_user.mention)
-    else:
-        pass
     dt = cmd.date
     dt_str_time = dt.strftime("%H:%M:%S")
     dt_str_date = dt.strftime("%A, %B %d, %Y")
     await pbot.send_message("DromBots", f"`NEW BOT LOGS`")
-    text = f"**Name :** {UI[0]}\n**BOT MSG ID :** {cmd.id}\n**Time :** `{dt_str_time}`\n**Bot Received :** `Attached Below`"
+    text = f"**BOT MSG ID :** {cmd.id}\n**Time :** `{dt_str_time}`\n**Bot Received :** `Attached Below`"
     await pbot.send_message("DromBots", text)
     T = await pbot.send_message("DromBots", f"{cmd.text.markdown}")
     if not GL:
