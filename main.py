@@ -99,7 +99,7 @@ async def c_back(pbot, query):
 @PBot.on_message(filters.incoming & filters.regex(f"{S}"))
 async def start(pbot, cmd):
        user_nam = cmd.from_user.mention
-       text = f"Hi {user_nam}\n\nSend me Link of any message to clone it here. If asked, send invite link.\n\nPublic Channels, Private Channels and Private Groups are allowed only."
+       text = f"Hello {user_nam}\n\nSend me Link of any message to clone it here. If asked, send invite link.\n\nPublic Channels, Private Channels and Private Groups are allowed only."
        await start_srb(cmd, text)
 
 def thumbnail(sender):
